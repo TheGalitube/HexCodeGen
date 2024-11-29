@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improved Color Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #hexDisplay, #rgbDisplay {
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 1em;
+        }
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+        }
+        .slider-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .slider-row label {
+            margin-right: 10px;
+            width: 50px;
+            font-size: 0.9em;
+        }
+        .slider-row input[type="range"] {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Improved Color Generator</h1>
+        
+        <input type="text" id="hexInput" placeholder="#000000">
+        <button onclick="setColor()">Set Color</button>
+        <button onclick="generateRandomColor()">Random Color</button>
+        
+        <div id="hexDisplay">Hex: #000000</div>
+        <div id="rgbDisplay">RGB: (0, 0, 0)</div>
+        
+        <div class="slider-container">
+            <div class="slider-row">
+                <label for="redSlider">Red</label>
+                <input type="range" id="redSlider" min="0" max="255" value="0">
+            </div>
+            <div class="slider-row">
+                <label for="greenSlider">Green</label>
+                <input type="range" id="greenSlider" min="0" max="255" value="0">
+            </div>
+            <div class="slider-row">
+                <label for="blueSlider">Blue</label>
+                <input type="range" id="blueSlider" min="0" max="255" value="0">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const hexInput = document.getElementById('hexInput');
+        const hexDisplay = document.getElementById('hexDisplay');
+        const rgbDisplay = document.getElementById('rgbDisplay');
+        const redSlider = document.getElementById('redSlider');
+        const greenSlider = document.getElementById('greenSlider');
+        const blueSlider = document.getElementById('blueSlider');
+
+        function updateColorDisplay(hex, r, g, b) {
+            document.body.style.backgroundColor = hex;
+            hexInput.value = hex;
+            hexDisplay.textContent = `Hex: ${hex}`;
+            rgbDisplay.textContent = `RGB: (${r}, ${g}, ${b})`;
+        }
+
+        function setColor() {
+            let hex = hexInput.value.trim();
+            if (!hex.startsWith('#')) hex = '#' + hex;
+            if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+                const r = parseInt(hex.substr(1, 2), 16);
+                const g = parseInt(hex.substr(3, 2), 16);
+                const b = parseInt(hex.substr(5, 2), 16);
+                redSlider.value = r;
+                greenSlider.value = g;
+                blueSlider.value = b;
+                updateColorDisplay(hex, r, g, b);
+            } else {
+                alert('Please enter a valid Hex Code (e.g., #FF0000)');
+            }
+        }
+
+        function generateRandomColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            const hex = rgbToHex(r, g, b);
+            updateColorDisplay(hex, r, g, b);
+        }
+
+        function rgbToHex(r, g, b) {
+            return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+        }
+
+        function handleSliderChange() {
+            const r = parseInt(redSlider.value);
+            const g = parseInt(greenSlider.value);
+            const b = parseInt(blueSlider.value);
+            const hex = rgbToHex(r, g, b);
+            updateColorDisplay(hex, r, g, b);
+        }
+
+        [redSlider, greenSlider, blueSlider].forEach(slider => 
+            slider.addEventListener('input', handleSliderChange)
+        );
+
+        updateColorDisplay('#000000', 0, 0, 0);
+    </script>
+</body>
+</html>
